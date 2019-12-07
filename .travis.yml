@@ -1,0 +1,18 @@
+os: linux
+dist: xenial
+
+git:
+  depth: false
+
+install: true
+
+stages:
+  - Build
+
+jobs:
+  include:
+    - stage: Build
+      name: Integration test against latest Docker
+      before_install: ./install_docker.sh
+      script: docker version
+
