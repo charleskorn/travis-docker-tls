@@ -32,6 +32,7 @@ openssl genrsa -out "$CLIENT_CERTS_DIR/key.pem" 4096
 openssl req -subj '/CN=client' -new -key "$CLIENT_CERTS_DIR/key.pem" -out "$CLIENT_CERTS_DIR/client.csr"
 echo extendedKeyUsage = clientAuth > "$CLIENT_CERTS_DIR/extfile-client.cnf"
 sudo openssl x509 -req -days 365 -sha256 -in "$CLIENT_CERTS_DIR/client.csr" -CA "$DAEMON_CERTS_DIR/ca.pem" -CAkey "$DAEMON_CERTS_DIR/ca-key.pem" -CAcreateserial -out "$CLIENT_CERTS_DIR/cert.pem" -extfile "$CLIENT_CERTS_DIR/extfile-client.cnf" -passin pass:"$PASSPHRASE"
+sudo chown $USER "$CLIENT_CERTS_DIR/cert.pem"
 ln -s "$DAEMON_CERTS_DIR/ca.pem" "$CLIENT_CERTS_DIR/ca.pem"
 
 echo "Cleaning up and setting permissions..."
