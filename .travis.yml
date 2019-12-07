@@ -16,5 +16,5 @@ jobs:
       before_install: ./install_docker.sh && ./configure_docker_tls.sh
       script: 
         - ls -la ~/.docker/certs
-        - ls -la /etc/docker/certs
+        - sudo ls -la /etc/docker/certs
         - DOCKER_CERT_PATH=$HOME/.docker/certs DOCKER_TLS_VERIFY=1 DOCKER_HOST=tcp://localhost:2376 docker version
