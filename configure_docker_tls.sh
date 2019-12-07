@@ -24,8 +24,10 @@ sudo openssl genrsa -out "$DAEMON_CERTS_DIR/server-key.pem" 4096
 sudo openssl req -subj "/CN=localhost" -sha256 -new -key "$DAEMON_CERTS_DIR/server-key.pem" -out "$DAEMON_CERTS_DIR/server.csr"
 
 echo "Generating daemon cert..."
-echo subjectAltName = DNS:localhost,IP:127.0.0.1 | sudo tee "$DAEMON_CERTS_DIR/extfile.cnf" > /dev/null
-echo extendedKeyUsage = serverAuth | sudo tee "$DAEMON_CERTS_DIR/extfile.cnf" > /dev/null
+cat <<EOF | sudo tee "$DAEMON_CERTS_DIR/extfile.cnf" > /dev/null
+subjectAltName = DNS:localhost,IP:127.0.0.1
+extendedKeyUsage = serverAuth
+EOF
 sudo openssl x509 -req -days 365 -sha256 -in "$DAEMON_CERTS_DIR/server.csr" -CA "$DAEMON_CERTS_DIR/ca.pem" -CAkey "$DAEMON_CERTS_DIR/ca-key.pem" -CAcreateserial -out "$DAEMON_CERTS_DIR/server-cert.pem" -extfile "$DAEMON_CERTS_DIR/extfile.cnf" -passin pass:"$PASSPHRASE"
 
 echo "Generating client key and signing request..."
@@ -45,7 +47,7 @@ sudo chmod 0444 "$DAEMON_CERTS_DIR/ca.pem" "$DAEMON_CERTS_DIR/server-cert.pem" "
 echo "Configuring daemon..."
 sudo sed -i 's#ExecStart=.*#ExecStart=/usr/bin/dockerd --containerd=/run/containerd/containerd.sock#' /lib/systemd/system/docker.service
 
-cat <<EOF | sudo tee "/etc/docker/daemon.json"
+cat <<EOF | sudo tee "/etc/docker/daemon.json" > /dev/null
 {
   "tlsverify": true,
   "tlscacert": "$DAEMON_CERTS_DIR/ca.pem",
