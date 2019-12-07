@@ -10,6 +10,7 @@ PASSPHRASE=abcd1234
 
 sudo mkdir -p "$DAEMON_CERTS_DIR"
 sudo rm -rf $DAEMON_CERTS_DIR/*
+sudo chmod -R a+rx "$DAEMON_CERTS_DIR"
 
 mkdir -p "$CLIENT_CERTS_DIR"
 sudo rm -rf $CLIENT_CERTS_DIR/*
